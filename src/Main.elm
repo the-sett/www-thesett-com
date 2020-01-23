@@ -87,22 +87,22 @@ markdownDocument =
 manifest : Manifest.Config Pages.PathKey
 manifest =
     { backgroundColor = Nothing
-    , categories = [ Pages.Manifest.Category.education ]
+    , categories = [ Pages.Manifest.Category.business ]
     , displayMode = Manifest.Standalone
     , orientation = Manifest.Portrait
-    , description = "elm-pages-starter - A statically typed site generator."
+    , description = "www-thesett-com Website for thesett.com"
     , iarcRatingId = Nothing
-    , name = "elm-pages-starter"
+    , name = "thesett"
     , themeColor = Nothing
     , startUrl = pages.index
-    , shortName = Just "elm-pages-starter"
+    , shortName = Just "thesett"
     , sourceIcon = images.iconPng
     }
 
 
 canonicalSiteUrl : String
 canonicalSiteUrl =
-    "https://elm-pages-starter.netlify.com/"
+    "https://silly-spence-61a4c5.netlify.com/"
 
 
 deviceConfig =

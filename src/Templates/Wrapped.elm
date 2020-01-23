@@ -46,10 +46,10 @@ head metadata =
         Metadata.Page meta ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages-starter"
+                , siteName = "www.thesett.com"
                 , image =
                     { url = images.iconPng
-                    , alt = "elm-pages logo"
+                    , alt = "thesett logo"
                     , dimensions = Nothing
                     , mimeType = Nothing
                     }
@@ -62,7 +62,7 @@ head metadata =
         Metadata.Article meta ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages starter"
+                , siteName = "www.thesett.com"
                 , image =
                     { url = meta.image
                     , alt = meta.description
@@ -99,16 +99,16 @@ head metadata =
             in
             Seo.summary
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages-starter"
+                , siteName = "www.thesett.com"
                 , image =
                     { url = meta.avatar
-                    , alt = meta.name ++ "'s elm-pages articles."
+                    , alt = meta.name ++ "'s articles."
                     , dimensions = Nothing
                     , mimeType = Nothing
                     }
                 , description = meta.bio
                 , locale = Nothing
-                , title = meta.name ++ "'s elm-pages articles."
+                , title = meta.name ++ "'s articles."
                 }
                 |> Seo.profile
                     { firstName = firstName
@@ -119,23 +119,23 @@ head metadata =
         Metadata.BlogIndex ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages"
+                , siteName = "www.thesett.com"
                 , image =
                     { url = images.iconPng
-                    , alt = "elm-pages logo"
+                    , alt = "thesett logo"
                     , dimensions = Nothing
                     , mimeType = Nothing
                     }
                 , description = siteTagline
                 , locale = Nothing
-                , title = "elm-pages blog"
+                , title = "thesett articles"
                 }
                 |> Seo.website
 
 
 siteTagline : String
 siteTagline =
-    "Starter blog for elm-pages"
+    "Knowledge articles for thesett.com"
 
 
 title : Metadata -> String
@@ -151,7 +151,7 @@ title frontmatter =
             author.name
 
         Metadata.BlogIndex ->
-            "elm-pages blog"
+            "thesett knowledge articles"
 
 
 pageView :
