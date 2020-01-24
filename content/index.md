@@ -24,11 +24,13 @@ In addition to *logging in* we might also want our users to be able to *log out*
 
 The application might try to access some protected resource and fail because the user does not hold a valid proof of authentication or access rights. In web applications these conditions will typically be signalled with an HTTP 401 or 403 response code. When that happens we might also like to tell our authentication module that it is *unauthenticated* and should be reset. Some application frameworks will do this part automatically, by intercepting HTTP calls behind the scenes. We generally eschew such magic in Elm and prefer to be explicit.
 
+The *log out* and *unauthenticated* actions are very similar, but there may be an important difference. When doing an explicit log out there can be a message to the authentication server to ask to invalidate the current proof of authentication. The unauthenticated action simply resets the state machine without interacting with the authentication server at all.
+
 There is one other behaviour that a user interface is interested in, and that is when *an attempt to authenticate fails*. In that case the user interface will typically tell the user that they were rejected and possibly invite them to try again.
 
-### What does this look like in Elm?
+![State machine for the auth API](/images/simple-state-machine.svg)
 
-Simple state machine
+### What does this look like in Elm?
 
 There are three possible states that your application can be in and they are `LoggedOut`, `LoggedIn` and `Failed`. The `LoggedOut` state is always going to be the initial state that an application starts in. I also described a minimal set of fields that an application can expect to know about when logged in - the user id, called a *subject* and the users access rights, called *scopes*.
 
