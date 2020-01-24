@@ -1,7 +1,7 @@
 module Devices exposing (devices)
 
 import Responsive exposing (Device(..), DeviceProps, ResponsiveStyle)
-import TypeScale exposing (majorThird)
+import TypeScale
 
 
 
@@ -49,8 +49,8 @@ xl =
 devices : ResponsiveStyle
 devices =
     { commonStyle =
-        { lineHeightRatio = 1.6
-        , typeScale = majorThird
+        { lineHeightRatio = 1.5
+        , typeScale = TypeScale.minorThird
         }
     , deviceStyles =
         { sm = sm
