@@ -13,7 +13,7 @@ sm =
     { device = Sm
     , baseFontSize = 14.0
     , breakWidth = 480
-    , wrapperWidth = 608
+    , wrapperWidth = 480
     }
 
 
@@ -22,7 +22,7 @@ md =
     { device = Md
     , baseFontSize = 15.0
     , breakWidth = 768
-    , wrapperWidth = 792
+    , wrapperWidth = 760
     }
 
 
@@ -31,7 +31,7 @@ lg =
     { device = Lg
     , baseFontSize = 16.0
     , breakWidth = 992
-    , wrapperWidth = 920
+    , wrapperWidth = 820
     }
 
 
@@ -40,7 +40,7 @@ xl =
     { device = Xl
     , baseFontSize = 17.0
     , breakWidth = 1200
-    , wrapperWidth = 1040
+    , wrapperWidth = 880
     }
 
 

@@ -22,7 +22,7 @@ import Structure exposing (StaticPage, StaticView, Template)
 import Styles exposing (lg, md, sm, xl)
 import TheSett.Buttons as Buttons
 import TheSett.Cards as Cards
-import TheSett.Laf as Laf exposing (devices)
+import TheSett.Laf as Laf
 import TheSett.Textfield as Textfield
 
 
@@ -34,7 +34,7 @@ view responsiveStyle siteMetadata page =
             { title = title page.frontmatter
             , body =
                 styled div
-                    [ Laf.wrapper devices ]
+                    [ Laf.wrapper responsiveStyle ]
                     []
                     [ pageView responsiveStyle siteMetadata page model contentView ]
             }
