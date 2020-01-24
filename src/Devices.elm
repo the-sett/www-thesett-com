@@ -11,7 +11,7 @@ import TypeScale exposing (majorThird)
 sm : DeviceProps
 sm =
     { device = Sm
-    , baseFontSize = 14.0
+    , baseFontSize = 16.0
     , breakWidth = 480
     , wrapperWidth = 480
     }
@@ -20,7 +20,7 @@ sm =
 md : DeviceProps
 md =
     { device = Md
-    , baseFontSize = 15.0
+    , baseFontSize = 17.0
     , breakWidth = 768
     , wrapperWidth = 760
     }
@@ -29,7 +29,7 @@ md =
 lg : DeviceProps
 lg =
     { device = Lg
-    , baseFontSize = 16.0
+    , baseFontSize = 18.0
     , breakWidth = 992
     , wrapperWidth = 820
     }
@@ -38,7 +38,7 @@ lg =
 xl : DeviceProps
 xl =
     { device = Xl
-    , baseFontSize = 17.0
+    , baseFontSize = 19.0
     , breakWidth = 1200
     , wrapperWidth = 880
     }
@@ -49,7 +49,7 @@ xl =
 devices : ResponsiveStyle
 devices =
     { commonStyle =
-        { lineHeightRatio = 1.4
+        { lineHeightRatio = 1.6
         , typeScale = majorThird
         }
     , deviceStyles =

@@ -35,7 +35,10 @@ I described three possible states that your application can be in and they are `
 ```elm
 type Status
     = LoggedOut
-    | LoggedIn { subject : String, scopes : List String }
+    | LoggedIn
+        { subject : String
+        , scopes : List String
+        }
     | Failed
 ```
 
@@ -67,11 +70,17 @@ type Msg
 In order to nest these `Model` and `Msg` types within an application, we will also need an `update` function. When an update occurs it may not result in a change to the authentication status. An example might be when an automatic refresh occurs, in which case the state will appear to remain steady in the `LoggedIn` state. The `update` function reports the status in an edge-triggered manner, which is to say that it reports it only when it chnages.
 
 ```elm
-update : Msg -> Model -> (Model, Cmd Msg, Maybe Status)
+update :
+    Msg
+    -> Model
+    -> (Model, Cmd Msg, Maybe Status)
 ```
 
 In order to access some protected resource we may need to provide proof of authentication and access rights along when making HTTP calls. The most common way this is done is by adding a so-called *bearer token* into the HTTP headers. I explained that some frameworks will handle this automatically behind the scenes. In Java or in Angular for example, we can sprinkle some magic `@Incantations` around or code and have these *aspects* of its behaviour automatically woven in. In Elm we much prefer to be epxlicit about things, so we are going to need a function to add the HTTP headers:
 
 ```elm
-addAuthHeaders : model -> List Header -> List Header
+addAuthHeaders :
+    model
+    -> List Header
+    -> List Header
 ```
