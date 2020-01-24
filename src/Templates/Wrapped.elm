@@ -169,7 +169,8 @@ pageView responsiveStyle siteMetadata page model viewForPage =
 
         Metadata.Article metadata ->
             div []
-                [ articleImageView responsiveStyle metadata.image
+                [ titleView responsiveStyle metadata.title
+                , articleImageView responsiveStyle metadata.image
                 , viewForPage
                 ]
 
@@ -179,6 +180,11 @@ pageView responsiveStyle siteMetadata page model viewForPage =
         Metadata.BlogIndex ->
             --, Index.view siteMetadata
             div [] []
+
+
+titleView : ResponsiveStyle -> String -> Html msg
+titleView responsiveStyle val =
+    h1 [] [ text val ]
 
 
 articleImageView : ResponsiveStyle -> ImagePath Pages.PathKey -> Html msg
