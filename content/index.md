@@ -2,7 +2,7 @@
 {
   "type": "blog",
   "author": "Rupert Smith",
-  "title": "Authenticing in Elm",
+  "title": "Authenticating in Elm",
   "description": "About an authentication API I designed for Elm.",
   "image": "/images/article-covers/bank-vault.jpg",
   "published": "2020-01-21"

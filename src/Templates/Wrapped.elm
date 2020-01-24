@@ -184,7 +184,10 @@ pageView responsiveStyle siteMetadata page model viewForPage =
 
 titleView : ResponsiveStyle -> String -> Html msg
 titleView responsiveStyle val =
-    h1 [] [ text val ]
+    styled div
+        [ Css.textAlign Css.center ]
+        []
+        [ h1 [] [ text val ] ]
 
 
 articleImageView : ResponsiveStyle -> ImagePath Pages.PathKey -> Html msg
