@@ -30,7 +30,7 @@ There is one other behaviour that a user interface is interested in, and that is
 
 Simple state machine
 
-I described three possible states that your application can be in and they are `LoggedOut`, `LoggedIn` and `Failed`. The `LoggedOut` state is always going to be the initial state that an application starts in. I also described a minimal set of fields that an application can expect to know about when logged in - the user id, called a *subject* and the users access rights, called *scopes*.
+There are three possible states that your application can be in and they are `LoggedOut`, `LoggedIn` and `Failed`. The `LoggedOut` state is always going to be the initial state that an application starts in. I also described a minimal set of fields that an application can expect to know about when logged in - the user id, called a *subject* and the users access rights, called *scopes*.
 
 ```elm
 type Status
@@ -42,7 +42,7 @@ type Status
     | Failed
 ```
 
-I mentioned that interacting with an authentication server is going to be modelled as side-effects in Elm, and that the possible actions are to log in, log out, and to tell the authentication module that its view of the world is wrong and the user is actually unauthenticated. Lets see what those side-effects look like:
+Interacting with an authentication server is going to be modelled as side-effects in Elm, and that the possible actions are to log in, log out, and to tell the authentication module that its view of the world is wrong and the user is actually unauthenticated. Lets see what those side-effects look like:
 
 ```elm
 login : Credentials -> Cmd Msg
@@ -59,7 +59,7 @@ type alias Credentials =
     }
 ```
 
-In order to keep the authentication state separate from the rest of the application state and for it to be entirely managed by the authentication module, we follow the Elm TEA architecture and define a `Model` and `Msg` type for it. The wider application does not need to know anything about what these are, so they can be made opaque:
+To keep the authentication state separate from the rest of the application state and for it to be entirely managed by the authentication module, we follow the Elm TEA architecture and define a `Model` and `Msg` type for it. The wider application does not need to know anything about what these are, so they can be made opaque:
 
 ```elm
 type Model
@@ -67,7 +67,7 @@ type Model
 type Msg
 ```
 
-In order to nest these `Model` and `Msg` types within an application, we will also need an `update` function. When an update occurs it may not result in a change to the authentication status. An example might be when an automatic refresh occurs, in which case the state will appear to remain steady in the `LoggedIn` state. The `update` function reports the status in an edge-triggered manner, which is to say that it reports it only when it chnages.
+To nest these `Model` and `Msg` types within an application, we will also need an `update` function. When an update occurs it may not result in a change to the authentication status. An example might be when an automatic refresh occurs, in which case the state will appear to remain steady in the `LoggedIn` state. The `update` function reports the status in an edge-triggered manner, which is to say that it reports it only when it chnages.
 
 ```elm
 update :
@@ -76,11 +76,11 @@ update :
     -> (Model, Cmd Msg, Maybe Status)
 ```
 
-In order to access some protected resource we may need to provide proof of authentication and access rights along when making HTTP calls. The most common way this is done is by adding a so-called *bearer token* into the HTTP headers. I explained that some frameworks will handle this automatically behind the scenes. In Java or in Angular for example, we can sprinkle some magic `@Incantations` around or code and have these *aspects* of its behaviour automatically woven in. In Elm we much prefer to be epxlicit about things, so we are going to need a function to add the HTTP headers:
+To access some protected resource we may need to provide proof of authentication and access rights along when making HTTP calls. The most common way this is done is by adding a so-called *bearer token* into the HTTP headers. I explained that some frameworks will handle this automatically behind the scenes. In Java or in Angular for example, we can sprinkle some magic `@Incantations` around or code and have these *aspects* of its behaviour automatically woven in. In Elm we much prefer to be epxlicit about things, so we are going to need a function to add the HTTP headers:
 
 ```elm
 addAuthHeaders :
-    model
+    Model
     -> List Header
     -> List Header
 ```
