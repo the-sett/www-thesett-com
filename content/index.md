@@ -14,7 +14,7 @@ Authentication can seem like a mysterious process, convoluted and leading to cod
 
 *There needs to be a log in box into which the user enters their username and password in order to gain access to some protected resource.*
 
-The act of logging in is typically performed by interacting with an authentication server. An authentication server is a gateway to the protected resource and the gatekeepers are its authentication functions that decide whether a user is allowed in or not. In Elm IO operations are modelled as *side-effects*.
+The act of logging in is typically performed against an authentication server. An authentication server is a gateway to the protected resource and the gatekeepers are its authentication functions that decide whether a user is allowed in or not. In Elm IO operations are modelled as *side-effects*.
 
 Once logged in, an authentication back-end may respond with some information about the user. At a minimum we might expect some *unique identifier* for the user and possibly also some indiciation of what *access rights* that user has.
 
