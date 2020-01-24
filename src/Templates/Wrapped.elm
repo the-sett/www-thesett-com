@@ -7,15 +7,16 @@ import Grid
 import Head
 import Head.Seo as Seo
 import Html.Styled exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
-import Html.Styled.Attributes exposing (id)
+import Html.Styled.Attributes exposing (id, src)
 import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Lazy exposing (lazy2)
 import Http
 import Json.Decode as Decode
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
+import Pages.ImagePath as ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
-import Responsive
+import Responsive exposing (ResponsiveStyle)
 import State exposing (Model, Msg(..))
 import Structure exposing (StaticPage, StaticView, Template)
 import Styles exposing (lg, md, sm, xl)
@@ -35,7 +36,7 @@ view responsiveStyle siteMetadata page =
                 styled div
                     [ Laf.wrapper devices ]
                     []
-                    [ pageView siteMetadata page model contentView ]
+                    [ pageView responsiveStyle siteMetadata page model contentView ]
             }
     }
 
@@ -155,18 +156,22 @@ title frontmatter =
 
 
 pageView :
-    List ( PagePath Pages.PathKey, Metadata )
+    ResponsiveStyle
+    -> List ( PagePath Pages.PathKey, Metadata )
     -> { path : PagePath Pages.PathKey, frontmatter : Metadata }
     -> Model
     -> Html Msg
     -> Html Msg
-pageView siteMetadata page model viewForPage =
+pageView responsiveStyle siteMetadata page model viewForPage =
     case page.frontmatter of
         Metadata.Page metadata ->
             viewForPage
 
         Metadata.Article metadata ->
-            viewForPage
+            div []
+                [ articleImageView responsiveStyle metadata.image
+                , viewForPage
+                ]
 
         Metadata.Author author ->
             viewForPage
@@ -174,3 +179,12 @@ pageView siteMetadata page model viewForPage =
         Metadata.BlogIndex ->
             --, Index.view siteMetadata
             div [] []
+
+
+articleImageView : ResponsiveStyle -> ImagePath Pages.PathKey -> Html msg
+articleImageView responsiveStyle articleImage =
+    styled img
+        [ Css.pct 100 |> Css.width ]
+        [ ImagePath.toString articleImage |> src
+        ]
+        []
