@@ -1,8 +1,8 @@
 module Markdown exposing (..)
 
-import Html
-import Html.Attributes as Attr
-import Html.Styled exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
+import Css
+import Html.Styled as Html exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
+import Html.Styled.Attributes as Attr
 import Markdown.Block exposing (Block)
 import Markdown.Html
 import Markdown.Parser exposing (Renderer)
@@ -20,9 +20,8 @@ markdownDocument =
                 markdownBody
                     |> Markdown.Parser.parse
                     |> Result.mapError deadEndsToString
-                    |> Result.andThen (Markdown.Parser.render markdownRenderer)
+                    |> Result.andThen (Markdown.Parser.render renderer)
                     |> Result.map (Html.div [])
-                    |> Result.map Html.Styled.fromUnstyled
         }
 
 
@@ -32,21 +31,22 @@ deadEndsToString deadEnds =
         |> String.join "\n"
 
 
-markdownRenderer : Markdown.Parser.Renderer (Html.Html msg)
-markdownRenderer =
-    let
-        default =
-            Markdown.Parser.defaultHtmlRenderer
-    in
-    { default
+renderer : Markdown.Parser.Renderer (Html msg)
+renderer =
+    { defaultStyledRenderer
         | image =
             \{ src } alt ->
-                Html.img [ Attr.src src, Attr.style "width" "100%" ] [ Html.text alt ] |> Ok
+                styled
+                    Html.img
+                    [ Css.pct 100 |> Css.width ]
+                    [ Attr.src src ]
+                    [ Html.text alt ]
+                    |> Ok
     }
 
 
-defaultHtmlRenderer : Renderer (Html.Html msg)
-defaultHtmlRenderer =
+defaultStyledRenderer : Renderer (Html msg)
+defaultStyledRenderer =
     { heading =
         \{ level, children } ->
             case level of
