@@ -8,17 +8,13 @@ import Devices
 import Head
 import Head.Seo as Seo
 import Html
-import Html.Attributes
-import Html.Styled exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
+import Html.Styled exposing (Html, div, toUnstyled)
 import Layouts.Default
 import Layouts.Zero
-import Markdown.Block exposing (Block)
-import Markdown.Html
-import Markdown.Parser
+import Markdown
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
 import Pages.Directory as Directory exposing (Directory)
-import Pages.Document
 import Pages.ImagePath as ImagePath exposing (ImagePath)
 import Pages.Manifest as Manifest
 import Pages.Manifest.Category
@@ -38,7 +34,7 @@ main =
         , update = update
         , onPageChange = \_ -> State.PageChanged
         , view = view
-        , documents = [ markdownDocument ]
+        , documents = [ Markdown.markdownDocument ]
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
         , internals = Pages.internals
@@ -70,41 +66,6 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
-
-
-markdownDocument : ( String, Pages.Document.DocumentHandler Metadata (Html Msg) )
-markdownDocument =
-    Pages.Document.parser
-        { extension = "md"
-        , metadata = Metadata.decoder
-        , body =
-            \markdownBody ->
-                markdownBody
-                    |> Markdown.Parser.parse
-                    |> Result.mapError deadEndsToString
-                    |> Result.andThen (Markdown.Parser.render markdownRenderer)
-                    |> Result.map (Html.div [])
-                    |> Result.map Html.Styled.fromUnstyled
-        }
-
-
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.Parser.deadEndToString
-        |> String.join "\n"
-
-
-markdownRenderer : Markdown.Parser.Renderer (Html.Html msg)
-markdownRenderer =
-    let
-        default =
-            Markdown.Parser.defaultHtmlRenderer
-    in
-    { default
-        | image =
-            \{ src } alt ->
-                Html.img [ Html.Attributes.src src, Html.Attributes.style "width" "100%" ] [ Html.text alt ] |> Ok
-    }
 
 
 manifest : Manifest.Config Pages.PathKey
