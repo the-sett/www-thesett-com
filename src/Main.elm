@@ -8,6 +8,7 @@ import Devices
 import Head
 import Head.Seo as Seo
 import Html
+import Html.Attributes
 import Html.Styled exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
 import Layouts.Default
 import Layouts.Zero
@@ -81,7 +82,7 @@ markdownDocument =
                 markdownBody
                     |> Markdown.parse
                     |> Result.mapError deadEndsToString
-                    |> Result.andThen (Markdown.render Markdown.defaultHtmlRenderer)
+                    |> Result.andThen (Markdown.render markdownRenderer)
                     |> Result.map (Html.div [])
                     |> Result.map Html.Styled.fromUnstyled
         }
@@ -91,6 +92,19 @@ deadEndsToString deadEnds =
     deadEnds
         |> List.map Markdown.deadEndToString
         |> String.join "\n"
+
+
+markdownRenderer : Markdown.Renderer (Html.Html msg)
+markdownRenderer =
+    let
+        default =
+            Markdown.defaultHtmlRenderer
+    in
+    { default
+        | image =
+            \{ src } alt ->
+                Html.img [ Html.Attributes.src src, Html.Attributes.style "width" "100%" ] [ Html.text alt ] |> Ok
+    }
 
 
 manifest : Manifest.Config Pages.PathKey
