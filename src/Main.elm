@@ -14,7 +14,7 @@ import Layouts.Default
 import Layouts.Zero
 import Markdown.Block exposing (Block)
 import Markdown.Html
-import Markdown.Parser as Markdown
+import Markdown.Parser
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
 import Pages.Directory as Directory exposing (Directory)
@@ -80,9 +80,9 @@ markdownDocument =
         , body =
             \markdownBody ->
                 markdownBody
-                    |> Markdown.parse
+                    |> Markdown.Parser.parse
                     |> Result.mapError deadEndsToString
-                    |> Result.andThen (Markdown.render markdownRenderer)
+                    |> Result.andThen (Markdown.Parser.render markdownRenderer)
                     |> Result.map (Html.div [])
                     |> Result.map Html.Styled.fromUnstyled
         }
@@ -90,15 +90,15 @@ markdownDocument =
 
 deadEndsToString deadEnds =
     deadEnds
-        |> List.map Markdown.deadEndToString
+        |> List.map Markdown.Parser.deadEndToString
         |> String.join "\n"
 
 
-markdownRenderer : Markdown.Renderer (Html.Html msg)
+markdownRenderer : Markdown.Parser.Renderer (Html.Html msg)
 markdownRenderer =
     let
         default =
-            Markdown.defaultHtmlRenderer
+            Markdown.Parser.defaultHtmlRenderer
     in
     { default
         | image =
