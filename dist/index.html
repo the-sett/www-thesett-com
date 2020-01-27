@@ -1,0 +1,795 @@
+<!DOCTYPE html><html lang="en"><head><link rel="preload" href="./content.json" as="fetch" crossorigin=""><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script>if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/service-worker.js");
+        });
+      } else {
+        console.log("No service worker registered.");
+      }</script><link rel="shortcut icon" href="/assets/favicon.ico"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png"><link rel="manifest" href="/assets/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#fff"><meta name="application-name" content="thesett"><link rel="apple-touch-icon" sizes="57x57" href="/assets/apple-touch-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-touch-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/assets/apple-touch-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/assets/apple-touch-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/apple-touch-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/apple-touch-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/assets/apple-touch-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/apple-touch-icon-152x152.png"><link rel="apple-touch-icon" sizes="167x167" href="/assets/apple-touch-icon-167x167.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-180x180.png"><link rel="apple-touch-icon" sizes="1024x1024" href="/assets/apple-touch-icon-1024x1024.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="thesett"><script src="/main.js" defer="defer"></script><link rel="preload" href="/main.js" as="script"><style>/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #333;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #008080;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #d14;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #900;
+  font-weight: bold;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #000080;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #990073;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3;
+}
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+</style><style>@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto&display=swap);</style><style>.avatar img {
+  border-radius: 50%;
+}
+</style><title>Authenticating in Elm</title><meta name="generator" content="elm-pages v1.1.8"><link rel="canonical" href="https://silly-spence-61a4c5.netlify.com/"><meta name="description" content="About an authentication API I designed for Elm."><meta property="og:image" content="https://silly-spence-61a4c5.netlify.com/images/article-covers/bank-vault.jpg"><meta property="og:image:secure_url" content="https://silly-spence-61a4c5.netlify.com/images/article-covers/bank-vault.jpg"><meta property="og:image:alt" content="About an authentication API I designed for Elm."><meta property="og:title" content="Authenticating in Elm"><meta property="og:url" content="https://silly-spence-61a4c5.netlify.com/"><meta property="og:description" content="About an authentication API I designed for Elm."><meta property="og:site_name" content="www.thesett.com"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:title" content="Authenticating in Elm"><meta property="twitter:description" content="About an authentication API I designed for Elm."><meta property="twitter:image" content="https://silly-spence-61a4c5.netlify.com/images/article-covers/bank-vault.jpg"><meta property="twitter:image:alt" content="About an authentication API I designed for Elm."><meta property="og:type" content="article"><meta property="article:published_time" content="2020-01-21"></head><body><div data-url="http://localhost:8000/" display="none"></div><div><style>._3b061060 {
+    width:100%;
+}
+
+._533baaa1 {
+    background-color:rgb(248, 248, 248);
+    box-shadow:0px 0px 1px 0px rgba(0, 0, 0, 0.25);
+}
+
+._5bf2bd91 {
+    margin-right:auto;
+    margin-left:auto;
+    margin:0px auto;
+    padding:0px 5vw;
+    max-width:480px;
+    height:96px;
+}
+
+@media (min-width: 768px) {
+    ._5bf2bd91 {
+        height:100px;
+    }
+}
+
+@media (min-width: 992px) {
+    ._5bf2bd91 {
+        height:108px;
+    }
+}
+
+@media (min-width: 1200px) {
+    ._5bf2bd91 {
+        height:112px;
+    }
+}
+
+@media (min-width: 768px) {
+    ._5bf2bd91 {
+        max-width:760px;
+    }
+}
+
+@media (min-width: 992px) {
+    ._5bf2bd91 {
+        max-width:820px;
+    }
+}
+
+@media (min-width: 1200px) {
+    ._5bf2bd91 {
+        max-width:880px;
+    }
+}
+
+._620550a6 {
+    margin:0px auto;
+    padding:0px 5vw;
+    max-width:480px;
+}
+
+@media (min-width: 768px) {
+    ._620550a6 {
+        max-width:760px;
+    }
+}
+
+@media (min-width: 992px) {
+    ._620550a6 {
+        max-width:820px;
+    }
+}
+
+@media (min-width: 1200px) {
+    ._620550a6 {
+        max-width:880px;
+    }
+}
+
+._64a46375 {
+    box-sizing:border-box;
+    flex-shrink:0;
+    flex-grow:0;
+    margin-top:12px;
+    height:72px;
+    width:72px;
+    flex-basis:8.333333333333332%;
+    max-width:8.333333333333332%;
+}
+
+@media (min-width: 768px) {
+    ._64a46375 {
+        margin-top:12.5px;
+    height:75px;
+    width:75px;
+    }
+}
+
+@media (min-width: 992px) {
+    ._64a46375 {
+        margin-top:13.5px;
+    height:81px;
+    width:81px;
+    }
+}
+
+@media (min-width: 1200px) {
+    ._64a46375 {
+        margin-top:14px;
+    height:84px;
+    width:84px;
+    }
+}
+
+._8ffde320 {
+    text-align:center;
+}
+
+._b8400286 {
+    box-sizing:border-box;
+    display:flex;
+    flex:0 1 auto;
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:center;
+}</style><link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet"><style>code {
+    line-height:0px;
+}
+
+table {
+    -webkit-border-vertical-spacing:0px;
+}
+
+blockquote, caption, dd, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, legend, ol, p, pre, table, td, th, ul {
+    margin:0;
+    padding:0;
+}
+
+a, ins, u {
+    text-decoration:none;
+}
+
+ins {
+    border-bottom:1px solid;
+}
+
+img {
+    font-style:italic;
+}
+
+fieldset {
+    border:0px none;
+}
+
+button, input:button, label, option, select {
+    cursor:pointer;
+}
+
+.text-input:active, .text-input:focus, textarea:active, textarea:focus {
+    cursor:text;
+    outline:none;
+}
+
+html {
+    line-height:1.15;
+    -ms-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%;
+}
+
+body {
+    margin:0;
+}
+
+article, aside, footer, header, nav, section {
+    display:block;
+}
+
+h1 {
+    font-size:2em;
+    margin:0.67em 0;
+}
+
+figcaption, figure, main {
+    display:block;
+}
+
+figure {
+    margin:1em 40px;
+}
+
+hr {
+    box-sizing:content-box;
+    height:0;
+    overflow:visible;
+}
+
+pre {
+    font-family:monospace, monospace;
+    font-size:1em;
+}
+
+a {
+    background-color:transparent;
+    -webkit-text-decoration-skip:objects;
+}
+
+abbr[title] {
+    border-bottom:none;
+    text-decoration:underline;
+    text-decoration:underline dotted;
+}
+
+b, strong {
+    font-weight:inherit;
+}
+
+b, strong {
+    font-weight:bolder;
+}
+
+code, kbd, samp {
+    font-family:monospace, monospace;
+    font-size:1em;
+}
+
+dfn {
+    font-style:italic;
+}
+
+mark {
+    background-color:#ff0;
+    color:#000;
+}
+
+small {
+    font-size:80%;
+}
+
+sub, sup {
+    font-size:75%;
+    line-height:0;
+    position:relative;
+    vertical-align:baseline;
+}
+
+sub {
+    bottom:-0.25em;
+}
+
+sup {
+    top:-0.5em;
+}
+
+audio, video {
+    display:inline-block;
+}
+
+audio:not([controls]) {
+    display:none;
+    height:0;
+}
+
+img {
+    border-style:none;
+}
+
+svg:not(:root) {
+    overflow:hidden;
+}
+
+button, input, optgroup, select, textarea {
+    font-family:sans-serif;
+    font-size:100%;
+    line-height:1.15;
+    margin:0;
+}
+
+button, input {
+    overflow:visible;
+}
+
+button, select {
+    text-transform:none;
+}
+
+button, html [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance:button;
+}
+
+button::-moz-focus-inner, [type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner {
+    border-style:none;
+    padding:0;
+}
+
+button:-moz-focusring, [type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring {
+    outline:1px dotted ButtonText;
+}
+
+fieldset {
+    padding:0.35em 0.75em 0.625em;
+}
+
+legend {
+    box-sizing:border-box;
+    color:inherit;
+    display:table;
+    max-width:100%;
+    padding:0;
+    white-space:normal;
+}
+
+progress {
+    display:inline-block;
+    vertical-align:baseline;
+}
+
+textarea {
+    overflow:auto;
+}
+
+[type="checkbox"], [type="radio"] {
+    box-sizing:border-box;
+    padding:0;
+}
+
+[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button {
+    height:auto;
+}
+
+[type="search"] {
+    -webkit-appearance:textfield;
+    outline-offset:-2px;
+}
+
+[type="search"]::-webkit-search-cancel-button, [type="search"]::-webkit-search-decoration {
+    -webkit-appearance:none;
+}
+
+::-webkit-file-upload-button {
+    -webkit-appearance:button;
+    font:inherit;
+}
+
+details, menu {
+    display:block;
+}
+
+summary {
+    display:list-item;
+}
+
+canvas {
+    display:inline-block;
+}
+
+template {
+    display:none;
+}
+
+[hidden] {
+    display:none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin:0px 0px 0px;
+}
+
+blockquote, dl, fieldset, ol, p, pre, table, ul, hr {
+    margin:0px 0px 24px;
+}
+
+@media (min-width: 768px) {
+    blockquote, dl, fieldset, ol, p, pre, table, ul, hr {
+        margin:0px 0px 25px;
+    }
+}
+
+@media (min-width: 992px) {
+    blockquote, dl, fieldset, ol, p, pre, table, ul, hr {
+        margin:0px 0px 27px;
+    }
+}
+
+@media (min-width: 1200px) {
+    blockquote, dl, fieldset, ol, p, pre, table, ul, hr {
+        margin:0px 0px 28px;
+    }
+}
+
+dd, ol, ul {
+    margin:24px 24px;
+}
+
+@media (min-width: 768px) {
+    dd, ol, ul {
+        margin:25px 25px;
+    }
+}
+
+@media (min-width: 992px) {
+    dd, ol, ul {
+        margin:27px 27px;
+    }
+}
+
+@media (min-width: 1200px) {
+    dd, ol, ul {
+        margin:28px 28px;
+    }
+}
+
+html {
+    font-family:Source Sans Pro, Helvetica;
+    font-weight:400;
+    text-rendering:optimizeLegibility;
+    color:#242424 !important;
+}
+
+h1, h2, h3, h4 {
+    color:#646464 !important;
+    font-weight:bold;
+}
+
+html {
+    font-size:16px;
+    line-height:24px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size:17px;
+    line-height:25px;
+    }
+}
+
+@media (min-width: 992px) {
+    html {
+        font-size:18px;
+    line-height:27px;
+    }
+}
+
+@media (min-width: 1200px) {
+    html {
+        font-size:19px;
+    line-height:28px;
+    }
+}
+
+h1 {
+    font-size:33px;
+    line-height:72px;
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size:35px;
+    line-height:75px;
+    }
+}
+
+@media (min-width: 992px) {
+    h1 {
+        font-size:37px;
+    line-height:81px;
+    }
+}
+
+@media (min-width: 1200px) {
+    h1 {
+        font-size:39px;
+    line-height:84px;
+    }
+}
+
+h2 {
+    font-size:27px;
+    line-height:48px;
+}
+
+@media (min-width: 768px) {
+    h2 {
+        font-size:29px;
+    line-height:50px;
+    }
+}
+
+@media (min-width: 992px) {
+    h2 {
+        font-size:31px;
+    line-height:54px;
+    }
+}
+
+@media (min-width: 1200px) {
+    h2 {
+        font-size:32px;
+    line-height:56px;
+    }
+}
+
+h3 {
+    font-size:23px;
+    line-height:48px;
+}
+
+@media (min-width: 768px) {
+    h3 {
+        font-size:24px;
+    line-height:50px;
+    }
+}
+
+@media (min-width: 992px) {
+    h3 {
+        font-size:25px;
+    line-height:54px;
+    }
+}
+
+@media (min-width: 1200px) {
+    h3 {
+        font-size:27px;
+    line-height:56px;
+    }
+}
+
+h4 {
+    font-size:19px;
+    line-height:48px;
+}
+
+@media (min-width: 768px) {
+    h4 {
+        font-size:20px;
+    line-height:50px;
+    }
+}
+
+@media (min-width: 992px) {
+    h4 {
+        font-size:21px;
+    line-height:54px;
+    }
+}
+
+@media (min-width: 1200px) {
+    h4 {
+        font-size:22px;
+    line-height:56px;
+    }
+}
+
+.er-textfield {
+    position:relative;
+    font-family:Helvetica;
+    margin-top:24px;
+    padding-bottom:24px;
+    height:24px;
+}
+
+@media (min-width: 768px) {
+    .er-textfield {
+        margin-top:25px;
+    padding-bottom:25px;
+    height:25px;
+    }
+}
+
+@media (min-width: 992px) {
+    .er-textfield {
+        margin-top:27px;
+    padding-bottom:27px;
+    height:27px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .er-textfield {
+        margin-top:28px;
+    padding-bottom:28px;
+    height:28px;
+    }
+}
+
+.er-textfield--label {
+    position:absolute;
+    color:#999;
+    left:0px;
+    top:0px;
+    transition:all 0.2s ease;
+    pointer-events:none;
+}
+
+.er-textfield--label-floating {
+    top:-24px;
+    transform:scale(0.66);
+    transform-origin:left center;
+    left:0px;
+    color:#4CAF50;
+}
+
+@media (min-width: 768px) {
+    .er-textfield--label-floating {
+        top:-25px;
+    }
+}
+
+@media (min-width: 992px) {
+    .er-textfield--label-floating {
+        top:-27px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .er-textfield--label-floating {
+        top:-28px;
+    }
+}
+
+.er-textfield--input {
+    border:0px;
+    border-bottom:1px solid #666;
+    display:block;
+    background-color:transparent;
+    width:100%;
+}
+
+.er-textfield--input:focus {
+    outline:none;
+}
+
+.er-textfield--span {
+    position:relative;
+    display:block;
+    width:100%;
+}
+
+.er-textfield--span::before {
+    content:'';
+    height:2px;
+    width:0px;
+    bottom:0px;
+    position:absolute;
+    background-color:#4CAF50;
+    transition:all 0.2s ease;
+    left:50%;
+}
+
+.er-textfield--span::after {
+    content:'';
+    height:2px;
+    width:0px;
+    bottom:0px;
+    position:absolute;
+    background-color:#4CAF50;
+    transition:all 0.2s ease;
+    right:50%;
+}
+
+input:focus ~ span:before {
+    width:50%;
+}
+
+input:focus ~ span:after {
+    width:50%;
+}</style><style>html {
+    background-color:rgb(248, 248, 248);
+}</style><div><div class="_533baaa1"><div class="_5bf2bd91"><div class="_b8400286"><div class="_64a46375"><svg height="100%" viewBox="0 0 64.8 64.800003" version="1.1" id="svg8"><defs id="defs2"></defs><metadata id="metadata5"></metadata><g id="layer1" transform="translate(-37.84667,-106.08756)"><g id="g18805"><g transform="matrix(1.62,0,0,1.62,-43.552935,-85.862285)" id="g4499"><rect id="rect3680" width="40" height="40" x="50.24667" y="118.48756" style="stroke-width:0.21668023"></rect><rect id="rect3682" width="40" height="20" x="50.24667" y="138.48755" style="fill:#00b400;fill-opacity:1;stroke-width:0.20693107"></rect></g><g transform="matrix(1.62,0,0,1.62,-43.552935,-86.062269)" id="g14283"><text style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.66825008px;line-height:1.25;font-family:'Courier New';-inkscape-font-specification:'Courier New, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.31670624;stroke-opacity:1" x="52.988655" y="134.77873" id="text4491"><tspan id="tspan4489" x="52.988655" y="134.77873" style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.66825008px;font-family:'Courier New';-inkscape-font-specification:'Courier New, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.31670624;stroke-opacity:1">the</tspan></text><text style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.66825008px;line-height:1.25;font-family:'Courier New';-inkscape-font-specification:'Courier New, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.31720498;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" x="52.61158" y="148.69533" id="text4495"><tspan id="tspan4493" x="52.61158" y="148.69533" style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.66825008px;font-family:'Courier New';-inkscape-font-specification:'Courier New, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.31720498;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">sett</tspan></text></g></g></g></svg></div></div></div></div><div class="_620550a6"><div><div class="_8ffde320"><h1>Authenticating in Elm</h1></div><img class="_3b061060" src="/images/article-covers/bank-vault.jpg"><div><h3>The Code to the Vault</h3><p>Authentication can seem like a mysterious process, convoluted and leading to code that is hard to understand, supported by cryptic documentation with its own technical jargon. As application developers we are usually quite clear on what we need from it and where it will sit in our applications.</p><p><em>There needs to be a log in box into which the user enters their username and password in order to gain access to some protected resource.</em></p><p>The act of logging in is typically performed against an authentication server. An authentication server is a gateway to the protected resource and the gatekeepers are its authentication functions that decide whether a user is allowed in or not. In Elm IO operations are modelled as <em>side-effects</em>.</p><p>Once logged in, an authentication back-end may respond with some information about the user. At a minimum we might expect some <em>unique identifier</em> for the user and possibly also some indiciation of what <em>access rights</em> that user has.</p><p>The protected resource is the part of a system that is most interested in the access rights of your users. It must evaluate them to determine whether it should give access or not. A user interface running in a browser sits outside the firewall and cannot really be protected or fully trusted, since any attacker has access to its javascript code and can modify it and see all of its internal workings. That said, a user interface is usually also interested in knowing about the users access rights, in order to be helpful and only show the user actions that they will be able to succesfully perform given the access rights that they hold.</p><p>In addition to <em>logging in</em> we might also want our users to be able to <em>log out</em> explicitly. This does not always need to be done as typically the proof of authentication will expire on a timer anyway. For applications with greater security concerns such as online banking, the ability to log out can help give users more peace of mind.</p><p>The application might try to access some protected resource and fail because the user does not hold a valid proof of authentication or access rights. In web applications these conditions will typically be signalled with an HTTP 401 or 403 response code. When that happens we might also like to tell our authentication module that it is <em>unauthenticated</em> and should be reset. Some application frameworks will do this part automatically, by intercepting HTTP calls behind the scenes. We generally eschew such magic in Elm and prefer to be explicit.</p><p>The <em>log out</em> and <em>unauthenticated</em> actions are very similar, but there may be an important difference. When doing an explicit log out there can be a message to the authentication server to ask to invalidate the current proof of authentication. The unauthenticated action simply resets the state machine without interacting with the authentication server at all.</p><p>There is one other behaviour that a user interface is interested in, and that is when <em>an attempt to authenticate fails</em>. In that case the user interface will typically tell the user that they were rejected and possibly invite them to try again.</p><p><img class="_3b061060" src="/images/simple-state-machine.svg"></p><h3>What does this look like in Elm?</h3><p>There are three possible states that your application can be in and they are <code>LoggedOut</code>, <code>LoggedIn</code> and <code>Failed</code>. The <code>LoggedOut</code> state is always going to be the initial state that an application starts in. I also described a minimal set of fields that an application can expect to know about when logged in - the user id, called a <em>subject</em> and the users access rights, called <em>scopes</em>.</p><pre><code class="language-elm">type Status
+    = LoggedOut
+    | LoggedIn
+        { subject : String
+        , scopes : List String
+        }
+    | Failed</code></pre><p>Interacting with an authentication server is going to be modelled as side-effects in Elm, and that the possible actions are to log in, log out, and to tell the authentication module that its view of the world is wrong and the user is actually unauthenticated. Lets see what those side-effects look like:</p><pre><code class="language-elm">login : Credentials -&gt; Cmd Msg
+logout : Cmd Msg
+unauthed : Cmd Msg</code></pre><p>The credentials is most commonly made up of a username and password:</p><pre><code class="language-elm">type alias Credentials =
+    { username : String,
+      password : String
+    }</code></pre><p>To keep the authentication state separate from the rest of the application state and for it to be entirely managed by the authentication module, we follow the Elm TEA architecture and define a <code>Model</code> and <code>Msg</code> type for it. The wider application does not need to know anything about what these are, so they can be made opaque:</p><pre><code class="language-elm">type Model
+
+type Msg</code></pre><p>To nest these <code>Model</code> and <code>Msg</code> types within an application, we will also need an <code>update</code> function. When an update occurs it may not result in a change to the authentication status. An example might be when an automatic refresh occurs, in which case the state will appear to remain steady in the <code>LoggedIn</code> state. The <code>update</code> function reports the status in an edge-triggered manner, which is to say that it reports it only when it chnages.</p><pre><code class="language-elm">update :
+    Msg
+    -&gt; Model
+    -&gt; (Model, Cmd Msg, Maybe Status)</code></pre><p>To access some protected resource we may need to provide proof of authentication and access rights along when making HTTP calls. The most common way this is done is by adding a so-called <em>bearer token</em> into the HTTP headers. I explained that some frameworks will handle this automatically behind the scenes. In Java or in Angular for example, we can sprinkle some magic <code>@Incantations</code> around or code and have these <em>aspects</em> of its behaviour automatically woven in. In Elm we much prefer to be epxlicit about things, so we are going to need a function to add the HTTP headers:</p><pre><code class="language-elm">addAuthHeaders :
+    Model
+    -&gt; List Header
+    -&gt; List Header</code></pre></div></div></div><footer class="thesett-footer mdl-mega-footer"></footer></div></div></body></html>

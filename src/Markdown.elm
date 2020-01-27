@@ -42,6 +42,13 @@ renderer =
                     [ Attr.src src ]
                     [ Html.text alt ]
                     |> Ok
+        , codeBlock =
+            \{ body, language } ->
+                Html.pre []
+                    [ Html.code [ Attr.class "language-elm" ]
+                        [ Html.text body
+                        ]
+                    ]
     }
 
 
