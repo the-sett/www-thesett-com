@@ -8,7 +8,7 @@
   "published": "2020-01-21"
 }
 ---
-### The Keys to the Kingdom
+### The Code to the Vault
 
 Authentication can seem like a mysterious process, convoluted and leading to code that is hard to understand, supported by cryptic documentation with its own technical jargon. As application developers we are usually quite clear on what we need from it and where it will sit in our applications.
 

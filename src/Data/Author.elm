@@ -1,6 +1,5 @@
-module Data.Author exposing (Author, all, decoder, view)
+module Data.Author exposing (Author, all, decoder)
 
-import Element exposing (Element)
 import Html.Attributes as Attr
 import Json.Decode as Decode exposing (Decoder)
 import List.Extra
@@ -38,11 +37,12 @@ decoder =
             )
 
 
-view : List (Element.Attribute msg) -> Author -> Element msg
-view attributes author =
-    Element.image
-        (Element.width (Element.px 70)
-            :: Element.htmlAttribute (Attr.class "avatar")
-            :: attributes
-        )
-        { src = ImagePath.toString author.avatar, description = author.name }
+
+-- view : List (Element.Attribute msg) -> Author -> Element msg
+-- view attributes author =
+--     Element.image
+--         (Element.width (Element.px 70)
+--             :: Element.htmlAttribute (Attr.class "avatar")
+--             :: attributes
+--         )
+--         { src = ImagePath.toString author.avatar, description = author.name }
