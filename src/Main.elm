@@ -11,7 +11,9 @@ import Html
 import Html.Styled exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
 import Layouts.Default
 import Layouts.Zero
-import Markdown
+import Markdown.Block exposing (Block)
+import Markdown.Html
+import Markdown.Parser as Markdown
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
 import Pages.Directory as Directory exposing (Directory)
@@ -76,12 +78,19 @@ markdownDocument =
         , metadata = Metadata.decoder
         , body =
             \markdownBody ->
-                div []
-                    [ Markdown.toHtml [] markdownBody
-                        |> Html.Styled.fromUnstyled
-                    ]
-                    |> Ok
+                markdownBody
+                    |> Markdown.parse
+                    |> Result.mapError deadEndsToString
+                    |> Result.andThen (Markdown.render Markdown.defaultHtmlRenderer)
+                    |> Result.map (Html.div [])
+                    |> Result.map Html.Styled.fromUnstyled
         }
+
+
+deadEndsToString deadEnds =
+    deadEnds
+        |> List.map Markdown.deadEndToString
+        |> String.join "\n"
 
 
 manifest : Manifest.Config Pages.PathKey
