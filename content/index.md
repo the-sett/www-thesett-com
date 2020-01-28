@@ -8,6 +8,12 @@
   "published": "2020-01-21"
 }
 ---
+
+I designed an API to connect Elm apps with back-end authentication. You can find it on the Elm package site as [the-sett/elm-auth](https://package.elm-lang.org/packages/the-sett/elm-auth/latest/).
+
+You can find an implementation of this API, against Amazon Cognito, also on the Elm package site as
+[the-sett/elm-auth-aws](https://package.elm-lang.org/packages/the-sett/elm-auth-aws/latest/)
+
 ### The Code to the Vault
 
 Authentication can seem like a mysterious process, convoluted and leading to code that is hard to understand, supported by cryptic documentation with its own technical jargon. As application developers we are usually quite clear on what we need from it and where it will sit in our applications.
@@ -86,3 +92,54 @@ addAuthHeaders :
     -> List Header
     -> List Header
 ```
+
+### A flexible API
+
+One of my aims with this project was to have an API that can be implemented against multiple authentication servers. The idea is to have an consistent API that makes it easy to hook up an Elm application to authentication, but with enough flexibility to cover variations in how the authentication is achieved.
+
+Different back-ends will be set up differently so there is going to need to be some way of configuring them that can vary amongst implementations. This is also how we get hold of the initial model. The return type is a `Result` here, allowing for errors in the configuration to be reported:
+
+```elm
+config : Config -> Result String Model
+```
+
+The `LoggedIn` state reports a unique subject id and possibly a list of permission scopes *as a minimum*. Some back-ends may be able to provide more here, so I made that into an extensible record:
+
+```
+type alias AuthInfo auth =
+    { auth | scopes : List String, subject : String }
+```
+
+Some back-ends may support or require things like 2-factor authentication, or the user must answer a challenge to prove they are not a 'robot'. I catered for that possibility by adding a `Challenge` state to the `Status` type. Those challenges can be responded to with additional side-effects in the relevant implementations:
+
+```elm
+type Status auth chal
+    = LoggedOut
+    | LoggedIn (AuthInfo auth)
+    | Failed
+    | Challenged chal
+```
+
+### Bringing it all together
+
+An implementation of just part of the API is of little use; the full API must be implemented. I also want the API to be extensible so that the various implementations can add their own side-effect functions for things like answering challenges.
+
+The API is presented in a slightly unusual style to meet these desires; as an extensible record of functions:
+
+```elm
+type alias AuthAPI config model msg auth chal ext =
+    { ext
+        | init : config -> Result String model
+        , login : Credentials -> Cmd msg
+        , logout : Cmd msg
+        , unauthed : Cmd msg
+        , refresh : Cmd msg
+        , update :
+              msg -> model -> ( model, Cmd msg, Maybe (Status auth chal) )
+        , addAuthHeaders : model -> List Header -> List Header
+    }
+```
+
+The parts that can vary amongst implementations are represented as type variables. The core API that remains constant is represented by the fixed fields on the API, which correspond to all the components described above.
+
+It is true that 2 implementations of this API will have different types in Elm. So changing the authentication back-end of an application is not simply a drop-in job. The overall pattern of the design remains constant though amongst implementations, keeping things easy to understand and to re-use across many Elm applications.
