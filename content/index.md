@@ -120,6 +120,8 @@ type Status auth chal
     | Challenged chal
 ```
 
+![Extended state machine for the auth API](/images/extended-state-machine.svg)
+
 ### Bringing it all together
 
 An implementation of just part of the API is of little use; the full API must be implemented. I also want the API to be extensible so that the various implementations can add their own side-effect functions for things like answering challenges.
