@@ -144,4 +144,4 @@ type alias AuthAPI config model msg auth chal ext =
 
 The parts that can vary amongst implementations are represented as type variables. The core API that remains constant is represented by the fixed fields on the API, which correspond to all the components described above.
 
-It is true that 2 implementations of this API will have different types in Elm. So changing the authentication back-end of an application is not simply a drop-in job. The overall pattern of the design remains constant though amongst implementations, keeping things easy to understand and to re-use across many Elm applications.
+It is true that 2 implementations of this API will have different types in Elm. Changing the authentication back-end of an application is not simply a drop-in job. The overall pattern of the design remains constant amongst implementations, keeping things easy to understand and to re-use across many Elm applications.
