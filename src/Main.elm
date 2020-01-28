@@ -38,6 +38,7 @@ main =
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
         , internals = Pages.internals
+        , generateFiles = \_ -> []
         }
 
 
