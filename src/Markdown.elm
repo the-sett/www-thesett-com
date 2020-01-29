@@ -44,8 +44,13 @@ renderer =
                     |> Ok
         , codeBlock =
             \{ body, language } ->
-                Html.pre []
-                    [ Html.code [ Attr.class "language-elm" ]
+                styled Html.pre
+                    [ Css.pct 100 |> Css.width
+                    , Css.overflow Css.auto
+                    ]
+                    []
+                    [ Html.code
+                        []
                         [ Html.text body
                         ]
                     ]
