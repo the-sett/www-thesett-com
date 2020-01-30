@@ -75,7 +75,7 @@ type Model
 type Msg
 ```
 
-To nest these `Model` and `Msg` types within an application, we will also need an `update` function. When an update occurs it may not result in a change to the authentication status. An example might be when an automatic refresh occurs, in which case the state will appear to remain steady in the `LoggedIn` state. The `update` function reports the status in an edge-triggered manner, which is to say that it reports it only when it chnages.
+To nest these `Model` and `Msg` types within an application, we will also need an `update` function. When an update occurs it may not result in a change to the authentication status. An example might be when an automatic refresh occurs, in which case the state will appear to remain steady in the `LoggedIn` state. The `update` function reports the status in an edge-triggered manner, which is to say that it reports it only when it changes.
 
 ```elm
 update :
