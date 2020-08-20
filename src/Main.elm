@@ -28,18 +28,18 @@ import TheSett.Laf as Laf
 
 main : Pages.Platform.Program Model Msg Metadata (Html Msg)
 main =
-    Pages.Platform.application
-        { init = \_ -> init
+    Pages.Platform.init
+        { canonicalSiteUrl = canonicalSiteUrl
+        , documents = [ Markdown.markdownDocument ]
+        , init = \_ -> init
+        , internals = Pages.internals
+        , manifest = manifest
+        , onPageChange = Nothing
         , subscriptions = subscriptions
         , update = update
-        , onPageChange = \_ -> State.PageChanged
         , view = view
-        , documents = [ Markdown.markdownDocument ]
-        , manifest = manifest
-        , canonicalSiteUrl = canonicalSiteUrl
-        , internals = Pages.internals
-        , generateFiles = \_ -> []
         }
+        |> Pages.Platform.toProgram
 
 
 type alias Model =
