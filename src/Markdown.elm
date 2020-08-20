@@ -3,25 +3,28 @@ module Markdown exposing (..)
 import Css
 import Html.Styled as Html exposing (Html, div, form, h1, h4, img, label, p, pre, span, styled, text, toUnstyled)
 import Html.Styled.Attributes as Attr
-import Markdown.Block exposing (Block)
+import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.Html
-import Markdown.Parser exposing (Renderer)
+import Markdown.Parser
+import Markdown.Renderer exposing (Renderer)
 import Metadata exposing (Metadata)
 
 
-markdownDocument : ( String, Pages.Document.DocumentHandler Metadata (Html msg) )
+
+--markdownDocument : ( String, Pages.Document.DocumentHandler Metadata (Html msg) )
+
+
 markdownDocument =
-    Pages.Document.parser
-        { extension = "md"
-        , metadata = Metadata.decoder
-        , body =
-            \markdownBody ->
-                markdownBody
-                    |> Markdown.Parser.parse
-                    |> Result.mapError deadEndsToString
-                    |> Result.andThen (Markdown.Parser.render renderer)
-                    |> Result.map (Html.div [])
-        }
+    { extension = "md"
+    , metadata = Metadata.decoder
+    , body =
+        \markdownBody ->
+            markdownBody
+                |> Markdown.Parser.parse
+                |> Result.mapError deadEndsToString
+                |> Result.andThen (Markdown.Renderer.render renderer)
+                |> Result.map (Html.div [])
+    }
 
 
 deadEndsToString deadEnds =
@@ -30,17 +33,16 @@ deadEndsToString deadEnds =
         |> String.join "\n"
 
 
-renderer : Markdown.Parser.Renderer (Html msg)
+renderer : Renderer (Html msg)
 renderer =
     { defaultStyledRenderer
         | image =
-            \{ src } alt ->
+            \{ alt, src } ->
                 styled
                     Html.img
                     [ Css.pct 100 |> Css.width ]
                     [ Attr.src src ]
                     [ Html.text alt ]
-                    |> Ok
         , codeBlock =
             \{ body, language } ->
                 styled Html.pre
@@ -61,61 +63,105 @@ defaultStyledRenderer =
     { heading =
         \{ level, children } ->
             case level of
-                1 ->
+                Block.H1 ->
                     Html.h1 [] children
 
-                2 ->
+                Block.H2 ->
                     Html.h2 [] children
 
-                3 ->
+                Block.H3 ->
                     Html.h3 [] children
 
-                4 ->
+                Block.H4 ->
                     Html.h4 [] children
 
-                5 ->
+                Block.H5 ->
                     Html.h5 [] children
 
-                6 ->
+                Block.H6 ->
                     Html.h6 [] children
-
-                _ ->
-                    Html.text "TODO maye use a type here to clean it up... this will never happen"
-    , raw = Html.p []
-    , bold =
-        \content -> Html.strong [] [ Html.text content ]
-    , italic =
-        \content -> Html.em [] [ Html.text content ]
-    , code =
+    , paragraph = Html.p []
+    , hardLineBreak = Html.br [] []
+    , blockQuote = Html.blockquote []
+    , strong =
+        \children -> Html.strong [] children
+    , emphasis =
+        \children -> Html.em [] children
+    , codeSpan =
         \content -> Html.code [] [ Html.text content ]
     , link =
         \link content ->
-            Html.a [ Attr.href link.destination ] content
-                |> Ok
+            case link.title of
+                Just title ->
+                    Html.a
+                        [ Attr.href link.destination
+                        , Attr.title title
+                        ]
+                        content
+
+                Nothing ->
+                    Html.a [ Attr.href link.destination ] content
     , image =
-        \image content ->
-            Html.img [ Attr.src image.src ] [ Html.text content ]
-                |> Ok
-    , plain =
+        \imageInfo ->
+            case imageInfo.title of
+                Just title ->
+                    Html.img
+                        [ Attr.src imageInfo.src
+                        , Attr.alt imageInfo.alt
+                        , Attr.title title
+                        ]
+                        []
+
+                Nothing ->
+                    Html.img
+                        [ Attr.src imageInfo.src
+                        , Attr.alt imageInfo.alt
+                        ]
+                        []
+    , text =
         Html.text
     , unorderedList =
         \items ->
             Html.ul []
                 (items
                     |> List.map
-                        (\itemBlocks ->
-                            Html.li []
-                                itemBlocks
+                        (\item ->
+                            case item of
+                                Block.ListItem task children ->
+                                    let
+                                        checkbox =
+                                            case task of
+                                                Block.NoTask ->
+                                                    Html.text ""
+
+                                                Block.IncompleteTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked False
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+
+                                                Block.CompletedTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked True
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+                                    in
+                                    Html.li [] (checkbox :: children)
                         )
                 )
     , orderedList =
         \startingIndex items ->
             Html.ol
-                (if startingIndex /= 1 then
-                    [ Attr.start startingIndex ]
+                (case startingIndex of
+                    1 ->
+                        [ Attr.start startingIndex ]
 
-                 else
-                    []
+                    _ ->
+                        []
                 )
                 (items
                     |> List.map
@@ -133,4 +179,31 @@ defaultStyledRenderer =
                     ]
                 ]
     , thematicBreak = Html.hr [] []
+    , table = Html.table []
+    , tableHeader = Html.thead []
+    , tableBody = Html.tbody []
+    , tableRow = Html.tr []
+    , tableHeaderCell =
+        \maybeAlignment ->
+            let
+                attrs =
+                    maybeAlignment
+                        |> Maybe.map
+                            (\alignment ->
+                                case alignment of
+                                    Block.AlignLeft ->
+                                        "left"
+
+                                    Block.AlignCenter ->
+                                        "center"
+
+                                    Block.AlignRight ->
+                                        "right"
+                            )
+                        |> Maybe.map Attr.align
+                        |> Maybe.map List.singleton
+                        |> Maybe.withDefault []
+            in
+            Html.th attrs
+    , tableCell = Html.td []
     }

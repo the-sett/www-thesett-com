@@ -28,7 +28,7 @@ import TheSett.Laf as Laf
 
 main : Pages.Platform.Program Model Msg Metadata (Html Msg)
 main =
-    Pages.Platform.application
+    Pages.Platform.init
         { init = \_ -> init
         , subscriptions = subscriptions
         , update = update
