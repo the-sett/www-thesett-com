@@ -7,7 +7,6 @@ import Markdown.Block exposing (Block)
 import Markdown.Html
 import Markdown.Parser exposing (Renderer)
 import Metadata exposing (Metadata)
-import Pages.Document
 
 
 markdownDocument : ( String, Pages.Document.DocumentHandler Metadata (Html msg) )
