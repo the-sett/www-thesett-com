@@ -4,7 +4,6 @@ import Colors
 import Css
 import Css.Global
 import Date
-import Devices
 import Head
 import Head.Seo as Seo
 import Html
@@ -90,10 +89,6 @@ canonicalSiteUrl =
     "https://silly-spence-61a4c5.netlify.com/"
 
 
-deviceConfig =
-    Devices.devices
-
-
 global : List Css.Global.Snippet
 global =
     [ Css.Global.each
@@ -116,7 +111,7 @@ view :
 view siteMetadata page =
     let
         template =
-            Layouts.Default.layout Templates.Wrapped.view deviceConfig siteMetadata page
+            Layouts.Default.layout Templates.Wrapped.view Laf.devices siteMetadata page
     in
     { head = template.head
     , view =
@@ -129,7 +124,7 @@ view siteMetadata page =
             , body =
                 div []
                     [ Laf.fonts
-                    , Laf.style deviceConfig
+                    , Laf.style Laf.devices
                     , Css.Global.global global
                     , body
                     ]
