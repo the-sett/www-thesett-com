@@ -1,6 +1,5 @@
 module Main exposing (..)
 
-import Colors
 import Css
 import Css.Global
 import Date
@@ -22,6 +21,7 @@ import Pages.Platform exposing (Page)
 import Pages.StaticHttp as StaticHttp
 import State
 import Templates.Wrapped
+import TheSett.Colors as Colors
 import TheSett.Laf as Laf
 
 

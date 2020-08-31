@@ -1,6 +1,5 @@
 module Layouts.Default exposing (layout)
 
-import Colors
 import Css
 import Grid
 import Html.Styled exposing (Html, a, button, div, form, input, li, nav, node, styled, text, ul)
@@ -11,6 +10,7 @@ import State exposing (Model, Msg(..))
 import Structure exposing (Layout, Template)
 import Styles exposing (md, sm)
 import Svg.Styled
+import TheSett.Colors as Colors
 import TheSett.Laf as Laf exposing (wrapper)
 import TheSett.Logo as Logo
 import TheSett.Textfield as Textfield

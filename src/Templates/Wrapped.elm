@@ -1,6 +1,5 @@
 module Templates.Wrapped exposing (view)
 
-import Colors
 import Css
 import Date
 import Grid
@@ -22,6 +21,7 @@ import Structure exposing (StaticPage, StaticView, Template)
 import Styles exposing (lg, md, sm, xl)
 import TheSett.Buttons as Buttons
 import TheSett.Cards as Cards
+import TheSett.Colors as Colors
 import TheSett.Laf as Laf
 import TheSett.Textfield as Textfield
 
