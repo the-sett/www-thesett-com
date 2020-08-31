@@ -14,6 +14,7 @@ import Svg.Styled
 import TheSett.Laf as Laf exposing (wrapper)
 import TheSett.Logo as Logo
 import TheSett.Textfield as Textfield
+import TheSett.TopHeader as TopHeader
 
 
 layout : Layout Msg Model
@@ -34,54 +35,12 @@ layout template =
                 , body =
                     div
                         []
-                        [ topHeader devices model
+                        [ TopHeader.topHeader devices
                         , body
                         , footer devices
                         ]
                 }
         }
-
-
-topHeader : ResponsiveStyle -> Model -> Html Msg
-topHeader responsive model =
-    styled div
-        [ Css.backgroundColor Colors.paperWhite
-        , Css.boxShadow5 (Css.px 0) (Css.px 0) (Css.px 1) (Css.px 0) (Css.rgba 0 0 0 0.25)
-        ]
-        []
-        [ Grid.grid
-            [ sm
-                [ Grid.columns 12
-                , Styles.styles
-                    [ wrapper responsive
-                    , Responsive.deviceStyle responsive <|
-                        \device -> Css.height (Responsive.rhythmPx 4 device)
-                    ]
-                ]
-            ]
-            []
-            [ Grid.row
-                [ sm [ Grid.middle ] ]
-                []
-                [ Grid.col
-                    [ sm
-                        [ Grid.columns 1
-                        , Styles.styles
-                            [ Responsive.deviceStyles responsive <|
-                                \device ->
-                                    [ Css.marginTop (Responsive.rhythmPx 0.5 device)
-                                    , Css.height (Responsive.rhythmPx 3 device)
-                                    , Css.width (Responsive.rhythmPx 3 device)
-                                    ]
-                            ]
-                        ]
-                    ]
-                    []
-                    [ Svg.Styled.fromUnstyled Logo.logo ]
-                ]
-            ]
-            responsive
-        ]
 
 
 footer : ResponsiveStyle -> Html msg
